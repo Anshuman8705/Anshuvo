@@ -1,5 +1,7 @@
 # ANSHUVO
 
+**[Visit the live ANSHUVO store](https://anshuvo.onrender.com/)**
+
 A responsive demo shopping application built with React, Vite, Express, and SQLite. Browse products, manage a cart and wishlist, place demonstration orders, and manage the store through an admin dashboard.
 
 **This is an educational project. No real payments are processed or products shipped. Use test details only.**
