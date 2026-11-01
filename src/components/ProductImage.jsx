@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 // Renders the product photo when one exists, otherwise a small SVG
 // illustration so a missing image never shows as a broken icon.
 
@@ -46,14 +48,16 @@ function Art({ kind, tone = 0 }) {
 // `fit` is "cover" for cards and tiles (a tidy, uniform grid) and "contain"
 // on the product page, where the whole item should be visible.
 export default function ProductImage({ product, className = "", tone = 0, fit = "cover" }) {
+  const [failedImage, setFailedImage] = useState(null);
   const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   return (
     <div className={`flex aspect-[4/3] items-center justify-center overflow-hidden rounded bg-white ${className}`}>
-      {product.image ? (
+      {product.image && product.image !== failedImage ? (
         <img
           src={/^https?:\/\//.test(product.image) ? product.image : `${base}${product.image}`}
           alt={product.title}
           loading="lazy"
+          onError={() => setFailedImage(product.image)}
           className={`h-full w-full ${fit === "contain" ? "object-contain p-2" : "object-cover"}`}
         />
       ) : (

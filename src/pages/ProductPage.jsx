@@ -84,11 +84,7 @@ export default function ProductPage() {
 
         <aside className="h-fit rounded-lg border border-line p-4 lg:col-start-3 lg:row-span-2">
           <Price value={product.price} size="lg" />
-          {product.prime ? (
-            <p className="mt-2 text-sm text-ink"><span className="font-bold">Free delivery</span> {deliveryDate()}</p>
-          ) : (
-            <p className="mt-2 text-sm text-ink">$5.99 delivery {deliveryDate()}</p>
-          )}
+          <p className="mt-2 text-sm text-ink"><span className="font-bold">Free delivery</span> {deliveryDate()}</p>
           <p className="mt-1 flex items-center gap-1 text-sm text-link"><MapPin size={14} /> Deliver to India</p>
           <p className={`mt-3 text-lg font-medium ${product.stock > 8 ? "text-pine" : "text-crimson"}`} data-testid="stock">
             {out ? "Out of stock" : product.stock > 8 ? "In stock" : `Only ${product.stock} left in stock`}
@@ -110,7 +106,7 @@ export default function ProductPage() {
 
           <div className="mt-4 space-y-2 text-xs text-muted">
             <p className="flex items-center gap-2"><Lock size={14} /> Secure transaction</p>
-            <p className="flex items-center gap-2"><Truck size={14} /> Ships from NimbusMart</p>
+            <p className="flex items-center gap-2"><Truck size={14} /> Ships from ANSHUVO</p>
             <p className="flex items-center gap-2"><RotateCcw size={14} /> Returnable within 30 days</p>
           </div>
         </aside>

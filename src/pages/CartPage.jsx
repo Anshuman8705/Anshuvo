@@ -27,7 +27,7 @@ export default function CartPage() {
     <main className="mx-auto max-w-site px-3 py-4 md:px-4">
       <div className="grid gap-4 lg:grid-cols-[1fr_300px]">
         <section className="bg-white p-5" aria-labelledby="cart-heading">
-          <div className="flex items-baseline justify-between">
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
             <h1 id="cart-heading" className="text-2xl font-bold text-ink">Shopping cart</h1>
             <div className="flex items-center gap-3">
               {syncing ? <span className="text-xs text-muted">Syncing with your account</span> : null}
@@ -37,8 +37,8 @@ export default function CartPage() {
           <p className="border-b border-line pb-2 text-right text-sm text-muted">Price</p>
 
           {items.map((i) => (
-            <div key={i.id} className="flex gap-4 border-b border-line py-4" data-testid="cart-line">
-              <Link to={`/product/${i.id}`} className="w-28 shrink-0 rounded sm:w-36">
+            <div key={i.id} className="grid grid-cols-[80px_minmax(0,1fr)] gap-3 border-b border-line py-4 sm:flex sm:gap-4" data-testid="cart-line">
+              <Link to={`/product/${i.id}`} className="w-20 shrink-0 rounded sm:w-36">
                 <ProductImage product={i} />
               </Link>
               <div className="min-w-0 flex-1">
@@ -75,7 +75,7 @@ export default function CartPage() {
                   <button type="button" onClick={() => remove(i.id)} className="text-sm text-link hover:underline">Delete</button>
                 </div>
               </div>
-              <div className="shrink-0 text-right">
+              <div className="col-start-2 shrink-0 text-right">
                 <Price value={(i.price || 0) * i.qty} />
                 {i.qty > 1 ? <p className="text-xs text-muted">{money(i.price)} each</p> : null}
               </div>

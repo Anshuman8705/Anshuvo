@@ -41,8 +41,8 @@ export function CartProvider({ children }) {
   const [toast, setToast] = useState(null);
   const [syncing, setSyncing] = useState(false);
   const timer = useRef(null);
-  const lastUser = useRef(null);
   const skipNextSync = useRef(false);
+  const syncInProgress = useRef(false);
 
   useEffect(() => save(STORAGE_KEY, lines), [lines]);
   useEffect(() => save(GUEST_ORDERS_KEY, guestOrders), [guestOrders]);
@@ -53,30 +53,32 @@ export function CartProvider({ children }) {
   // so adopt it as-is rather than merging the local copy back in.
   useEffect(() => {
     const id = user?.id || null;
-    if (id === lastUser.current) return;
-    lastUser.current = id;
-    if (!id) return;
+    if (!id) { syncInProgress.current = false; setSyncing(false); return; }
+    let active = true;
+    syncInProgress.current = true;
     setSyncing(true);
     const sync = authSource === "restored" ? api("/cart") : api("/cart/merge", { method: "POST", body: { lines } });
     sync
       .then((serverLines) => {
+        if (!active) return;
         skipNextSync.current = true;
         dispatch({ type: "replace", lines: serverLines });
       })
       .catch(() => {})
-      .finally(() => setSyncing(false));
+      .finally(() => { if (active) { syncInProgress.current = false; setSyncing(false); } });
+    return () => { active = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user?.id, authSource]);
 
   // Every change while signed in is pushed to the server.
   useEffect(() => {
-    if (!user) return;
+    if (!user || syncInProgress.current) return;
     if (skipNextSync.current) {
       skipNextSync.current = false;
       return;
     }
     api("/cart", { method: "PUT", body: { lines } }).catch(() => {});
-  }, [lines, user]);
+  }, [lines, user?.id]);
 
   // Keep product details for every line in the cart fresh.
   const ids = lines.map((l) => l.id).sort((a, b) => a - b).join(",");

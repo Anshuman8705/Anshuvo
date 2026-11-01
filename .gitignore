@@ -7,3 +7,7 @@ coverage
 .env.*
 server/data/*.db
 server/data/*.db-*
+
+!.env.example
+__pycache__/
+*.pyc

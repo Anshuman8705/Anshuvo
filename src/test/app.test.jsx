@@ -62,7 +62,7 @@ describe("storefront against a live API", () => {
   it("searches from the header", async () => {
     const user = userEvent.setup();
     renderAt("/");
-    await user.type(screen.getByRole("searchbox", { name: /search nimbusmart/i }), "kettlebell{Enter}");
+    await user.type(screen.getByRole("searchbox", { name: /search anshuvo/i }), "kettlebell{Enter}");
     await waitFor(() => expect(cards()).toHaveLength(1));
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent('Results for "kettlebell"');
   });
@@ -91,6 +91,7 @@ describe("storefront against a live API", () => {
 
     await user.click(screen.getByRole("button", { name: /place your order/i }));
     expect(screen.getAllByRole("alert").length).toBeGreaterThan(5);
+    expect(screen.getByLabelText(/full name/i)).toHaveFocus();
 
     await fillCheckout(user, { card: "4242424242424241" });
     await user.click(screen.getByRole("button", { name: /place your order/i }));
@@ -128,7 +129,7 @@ describe("storefront against a live API", () => {
     const countBefore = screen.getByTestId("review-count").textContent;
 
     await user.click(within(screen.getByRole("banner")).getByRole("link", { name: /sign in/i }));
-    await user.click(await screen.findByRole("link", { name: /create an account/i }));
+    await user.click(await within(screen.getByRole("main")).findByRole("link", { name: /create an account/i }));
     await user.type(screen.getByLabelText(/your name/i), "Vikram Sharma");
     await user.type(screen.getByLabelText(/^email$/i), `vikram${unique()}@example.com`);
     await user.type(screen.getByLabelText(/^password$/i), "secret123");
@@ -197,7 +198,7 @@ describe("account, wishlist and admin screens", () => {
     await waitFor(() => expect(within(screen.getByTestId("address-list")).getByText(/5 saved lane/i)).toBeInTheDocument());
 
     // Checkout prefills from the default address
-    await user.click(screen.getByRole("link", { name: /your wishlist/i }));
+    await user.click(within(screen.getByRole("main")).getByRole("link", { name: /your wishlist/i }));
     await user.click(await screen.findByRole("button", { name: /^add to cart$/i }));
     await user.click(screen.getByRole("link", { name: /view cart/i }));
     await user.click(await screen.findByRole("button", { name: /proceed to checkout/i }));
@@ -242,7 +243,7 @@ describe("account, wishlist and admin screens", () => {
     await waitFor(() => expect(screen.getByText(/browser added kettle/i)).toBeInTheDocument());
 
     // Visible to shoppers
-    await user.type(screen.getByRole("searchbox", { name: /search nimbusmart/i }), "Browser Added{Enter}");
+    await user.type(screen.getByRole("searchbox", { name: /search anshuvo/i }), "Browser Added{Enter}");
     await waitFor(() => expect(cards()).toHaveLength(1));
     expect(screen.getByText(/30% off/)).toBeInTheDocument();
   });

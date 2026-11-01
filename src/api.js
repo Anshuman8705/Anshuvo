@@ -36,7 +36,12 @@ export async function api(path, { method = "GET", body, signal } = {}) {
     throw new ApiError(0, "Cannot reach the server. Is the API running?");
   }
   const text = await res.text();
-  const data = text ? JSON.parse(text) : null;
+  let data;
+  try {
+    data = text ? JSON.parse(text) : null;
+  } catch {
+    throw new ApiError(res.status, "The server returned an unexpected response. Please try again.");
+  }
   if (!res.ok) throw new ApiError(res.status, data?.error || res.statusText, data?.fields);
   return data;
 }

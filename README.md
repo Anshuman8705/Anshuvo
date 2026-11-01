@@ -1,135 +1,125 @@
-# NimbusMart India — source update / review package
+# ANSHUVO
 
-Prepared 8 September 2026.
+A responsive demo shopping application built with React, Vite, Express, and SQLite. Browse products, manage a cart and wishlist, place demonstration orders, and manage the store through an admin dashboard.
 
-**This ZIP is a CHANGES-ONLY package, not a standalone copy of the whole application.**
-Apply it to the existing `Anshuman8705/Amazon.clone` source folder. Existing product
-images, dependencies, authentication pages, admin pages and other unchanged files
-come from that repository. No GitHub commit or deployment is included.
+**This is an educational project. No real payments are processed or products shipped. Use test details only.**
 
-**Release status: local-development review draft. Not deployment validated.**
-This is the first NimbusMart code package, not completion of every item in the earlier audit.
+![ANSHUVO storefront](docs/anshuvo-desktop.jpg)
 
-## Included
+## Features
 
-- Sample INR catalogue prices (explicit sample values, not dollar-to-rupee conversions).
-- Indian number formatting, rupee price labels and rupee filter ranges.
-- Indian state/union-territory selection and six-digit PIN format validation.
-- Demo-only checkout: no card, CVV, UPI PIN or bank information is requested.
-- Shared checkout validation on client and server. No arbitrary 8% tax is added.
-- Totals calculated through integer paise; demo shipping is consistently free.
-- Category-driven homepage tiles, clearer demonstration wording and corrected shelf links.
-- Fresh seed data no longer invents thousands of customer ratings.
-- Filter/sort values are read from and written to the URL; price-limited links work.
-- Outdated search requests are cancelled to avoid stale suggestions.
-- “Buy now” is relabelled “Add and go to checkout” to match its existing behaviour.
-- Invalid fractional order quantities and duplicate product lines are rejected.
-- Order statuses cannot move backwards; delivered orders cannot be cancelled and restocked.
-- Random UUID order identifiers; production startup rejects weak/missing secrets.
-- The API advertises its INR release. The updated client rejects an old, unmarked API
-  rather than mislabelling old dollar values as rupees.
+- Responsive storefront with ANSHUVO branding, product categories, search suggestions, filters, sorting, and deals.
+- Product details, stock availability, reviews, and image fallbacks.
+- Guest carts and account cart synchronization across sessions.
+- Registration, sign-in, profile updates, saved addresses, and wishlists.
+- Demo checkout, order confirmation, order history, and eligible order cancellation.
+- Admin dashboard for products, inventory, orders, and customers.
+- Shared UI styling, keyboard focus indicators, a skip-to-content link, and checkout validation that focuses the first invalid field.
 
-## Important database boundary
+## Technology
 
-**This package does NOT migrate existing USD accounts/orders into an INR database.**
-It starts a separate demo database, `server/data/store-inr.db`. Your original
-`server/data/store.db` and its records are not rewritten, deleted or renamed.
-Existing accounts/orders are not imported into the new demo. A later, tested migration
-must preserve original order currencies and amounts and reconcile account/catalogue IDs.
+| Layer | Stack |
+| --- | --- |
+| Frontend | React 18, React Router 6, Vite 5 |
+| Styling | Tailwind CSS 3, Lucide icons |
+| API | Node.js 22, Express 4 |
+| Database | SQLite through better-sqlite3 |
+| Authentication | JWT sessions and bcrypt password hashing |
+| Tests | Vitest, React Testing Library, Supertest, Node test runner, Python unittest |
 
-The database guard refuses to open an existing unmarked/legacy database. Do not add an
-INR marker manually, point `DB_PATH` to an old USD file, or simply change the symbol on
-historical orders. That would corrupt the meaning of stored monetary amounts.
+## Run locally
 
-The updated browser uses separate INR token/cart storage keys so an old session is
-not silently reused against the separate demo database. Existing browser storage is
-not deleted. This namespace separation is NOT a complete fix for account-to-account
-cart synchronization; see remaining work below.
+Use **Node.js 22** and npm. The project also pins a local Node 22 runtime for npm scripts; using Node 22 for installation avoids native SQLite binary mismatches.
 
-## Apply to your existing source (Windows)
-
-Make a separate copy of the existing project folder for this review. Stop its dev server.
-Extract this ZIP into its own folder, then open a terminal in the extracted update folder.
-
-```powershell
-py apply_update.py "C:\path\to\Amazon.clone" --check
-py apply_update.py "C:\path\to\Amazon.clone" --apply
-```
-
-Use your actual project path. `--check` only checks compatibility. The updater verifies
-Git blob hashes against the reviewed source before writing anything. It refuses to
-overwrite newer edits. It saves the previous source under `.nimbus-update-backups/`
-and creates a receipt listing changed and new files. It never copies a database.
-
-Then open the **project** folder:
-
-```powershell
-cd "C:\path\to\Amazon.clone"
+```bash
+git clone https://github.com/Anshuman8705/Anshuvo.git
+cd Anshuvo
 npm ci
 npm run dev
 ```
 
-Node.js 22 is recommended, matching the existing project. Open the URL printed by Vite.
-If `.env` defines `DB_PATH`, use a new, unused path:
+- Storefront: [localhost:5173](http://localhost:5173)
+- API health check: [localhost:4000/api/health](http://localhost:4000/api/health)
 
-```dotenv
-DB_PATH=server/data/store-inr.db
+The development command starts both servers. Vite forwards `/api` requests to Express on port 4000. SQLite initializes on first startup at `server/data/store.db`.
+
+If switching Node versions causes a `NODE_MODULE_VERSION` error, activate Node 22 and run `npm ci` again.
+
+### Optional configuration
+
+Copy `.env.example` to `.env` in the project root and adjust as needed. Do not commit `.env` or database files.
+
+| Variable | Purpose / development default |
+| --- | --- |
+| `PORT` | Express port; `4000` |
+| `DB_PATH` | SQLite file; `server/data/store.db` |
+| `JWT_SECRET` | Session-signing secret; set a strong private value for hosted use |
+| `ADMIN_EMAIL` | Seeded demo administrator; `admin@example.com` |
+| `ADMIN_PASSWORD` | Seeded demo administrator password; `admin123` |
+| `VITE_API_BASE` | Optional API origin, set before building a separately hosted frontend |
+| `VITE_BASE` | Optional frontend URL base path, set before building |
+
+The default administrator credentials are for local demonstrations only. Configure credentials before the first database initialization. Changing the environment password does not reset an existing account's password.
+
+### Demo checkout
+
+Use a test card number such as `4242 4242 4242 4242`, a future expiry such as `12/40`, and test security code `123`. Do not enter real payment information. Orders are recorded and stock changes, but no payment is taken.
+
+The active storefront uses **USD demo prices**, free delivery, and an illustrative 8% tax calculation. These are demonstration rules, not production tax or payment integrations.
+
+## Commands
+
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start frontend and API in development |
+| `npm run build` | Create the production frontend in `dist/` |
+| `npm start` | Run Express and serve the built frontend |
+| `npm test` | Run the active app suite and the separate India-package suite |
+| `npm run test:app` | Run storefront, API, validation, and cart tests |
+| `npm run test:india` | Run tests for the separate India migration package |
+| `npm run test:watch` | Watch the active app tests |
+| `python -m unittest discover -s tests -p "test_*.py"` | Test the legacy updater using temporary fixtures |
+| `npm run seed` | **Reset the database** and reload sample products; deletes existing demo accounts, orders, and reviews |
+
+## Verification
+
+Local verification on November 1, 2026:
+
+- 45 active application tests passed, including a cart-restoration regression test.
+- 43 separate India-package tests and 8 Python updater tests passed.
+- 13 focused storefront/cart regression checks passed after final UI fixes.
+- Production build and normal `npm start` health check passed.
+- Browser checks covered desktop and phone layouts, search, mobile filters, cart, demo checkout, orders, account, wishlist, and administration screens. Phone layouts were checked at 320 and 375 pixels wide.
+
+These are local results, not a claim of production certification. GitHub Actions runs the JavaScript tests and build for new changes.
+
+## Project structure
+
+```text
+src/                  Active React application and frontend tests
+server/               Express API, SQLite schema, routes, and API tests
+public/images/        Product images, banners, and ANSHUVO logos
+scripts/              Build and asset utilities
+tests/                Separate India-package and Python updater tests
+files/                Unapplied legacy India migration package
+docs/                 Preview and historical migration documentation
+.github/workflows/    CI and frontend deployment workflows
 ```
 
-Keep secrets in your own environment, not in source control or this chat. This update
-adds no npm dependencies. The original project package.json and lockfile are retained.
+## Hosting
 
-Before production, both frontend and backend must be tested together with the same
-release. Updating only the frontend will intentionally show an INR API mismatch.
+For the complete app, run `npm ci`, `npm run build`, and `npm start` on a Node 22 host with a **persistent writable disk** for SQLite. Configure the database path, signing secret, and administrator credentials. The included Render configuration uses a free instance; its local filesystem must not be treated as durable storage.
 
-## Run the checks supplied with this ZIP
+GitHub Pages serves only static files and cannot run Express or SQLite. The included Pages workflow publishes the frontend; a functional deployed shop also needs a separately hosted API and a build-time `VITE_API_BASE` value. The Vercel rewrite file is likewise not a deployment of the Express backend.
 
-From the **update package** folder, without installing any npm dependencies:
+This repository remains a demo application. Public production use needs additional security and operational work, including a review of authentication, guest-order access, abuse controls, backups, and payment handling.
 
-```powershell
-node --test tests/india.test.mjs
-py -m unittest discover -s tests -p "test_*.py" -v
-```
+## Legacy India update package
 
-The Node tests use Node 22's built-in SQLite. An experimental-feature warning is normal.
-See TEST_RESULTS.txt and VALIDATION.md for the actual scope and results.
+The `files/`, `apply_update.py`, `patches.py`, and `MANIFEST.json` files belong to an earlier, **unapplied** India localization package. Their tests do not mean the live app uses INR. Historical instructions are preserved in [docs/legacy-india-update.md](docs/legacy-india-update.md).
 
-## Free hosting — not implemented by this package
+Do not apply that updater over the current storefront without reviewing compatibility. Do not relabel existing USD prices or historical orders as INR. Some older root-level test notes also describe that earlier package; the commands and active-app description above take precedence.
 
-No paid service is selected or activated. Durable free cloud database integration
-(e.g. a compatible external database free tier) is still required before a persistent
-Render deployment. The existing synchronous SQLite driver has NOT been converted into
-a remote Turso driver; setting a Turso URL alone will not make this application use it.
+## Author and license
 
-For safety, this release blocks Render production startup with local SQLite unless
-`ALLOW_EPHEMERAL_DEMO=true` is explicitly set. That exception is ONLY for disposable
-sample data and permits resets; it is not a persistence fix. Do NOT use that exception
-for accounts/orders that need to be retained. Leave the current live site untouched.
-
-Render's free-service documentation states that local filesystem data is lost on
-redeploy, restart or spin-down. Source checked 8 September 2026:
-https://render.com/docs/free
-
-## Work still required from the audit
-
-- Durable free cloud storage, backups and a tested legacy USD/INR data migration.
-- Account-isolated cart state, safe initial merge/write sequencing, and visible sync errors.
-- Server-side order idempotency for lost-response/retry cases. The UI submit lock only
-  prevents duplicate clicks while a request is in flight; it is not API idempotency.
-- Complete keyboard search/navigation and mobile filter focus trapping/restoration.
-- Product image galleries, deeper accessibility checks and broader admin improvements.
-- Update the older card/US-price test fixtures and run the complete existing API/UI suite.
-- Full production build, responsive browser testing, and staging verification.
-
-## Rollback
-
-Stop the application. Use the receipt in `.nimbus-india-update.json` to locate the source
-backup. Restore the backed-up source files and remove only the source files listed in
-`createdFiles`. Do not remove either database as part of source rollback. Keep both
-copies until a tested migration or an explicit data-retention decision has been made.
-
-## Reviewed source
-
-Repository: https://github.com/Anshuman8705/Amazon.clone
-Base commit: feaa8bee544ec952849cccbacda19f0c85669f8f
-Expected source-file hashes are in patches.py. Package checksums are in MANIFEST.json.
+Built by **Anshuman Agrawal**. Licensed under the [MIT License](LICENSE). This project is not affiliated with Amazon or any other retailer.

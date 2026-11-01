@@ -63,7 +63,7 @@ export default function SignInPage({ mode = "signin" }) {
           )}
         </p>
         <p className="mt-3 text-xs text-muted">
-          Passwords are hashed with bcrypt and stored in the project's SQLite database. This is a class project, so do not reuse a real password.
+          This is a demo store. Please use a unique test password, not one you use for other accounts.
         </p>
       </form>
     </main>

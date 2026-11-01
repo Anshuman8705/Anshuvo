@@ -19,7 +19,7 @@ export function TextInput({ error, className = "", ...props }) {
     <input
       aria-invalid={error ? "true" : undefined}
       aria-describedby={error ? `${props.id}-error` : undefined}
-      className={`w-full rounded border px-3 py-2 text-sm shadow-inner ${error ? "border-crimson" : "border-line"} ${className}`}
+      className={`min-h-10 w-full rounded-lg border bg-white px-3 py-2 text-base transition-colors sm:text-sm ${error ? "border-crimson" : "border-line"} ${className}`}
       {...props}
     />
   );

@@ -11,6 +11,16 @@
   }
 }
 
+/* Shared surfaces and touch targets across storefront and account pages. */
+@layer components {
+  main section.bg-white,
+  main aside.bg-white,
+  main nav.bg-white,
+  main div.bg-white {
+    @apply rounded-lg;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -82,7 +82,7 @@ export default function ListingPage() {
   );
 
   return (
-    <main className="px-3 py-4 md:px-4">
+    <main className="mx-auto max-w-site px-3 py-4 md:px-4">
       <div className="grid gap-4 md:grid-cols-[230px_1fr] lg:grid-cols-[250px_1fr]">
         {!phone ? <FilterSidebar filters={filters} onChange={setFilters} /> : null}
 
@@ -94,7 +94,7 @@ export default function ListingPage() {
                 {loading || !results ? "Loading results" : `${results.length} ${results.length === 1 ? "result" : "results"}`}
               </p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               {phone ? (
                 <button
                   type="button"

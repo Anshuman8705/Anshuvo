@@ -9,7 +9,7 @@ import { api, qs } from "../api.js";
 import { money } from "../utils/format.js";
 import SideMenu from "./SideMenu.jsx";
 
-const logo = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/images/logo.png`;
+const logo = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/images/anshuvo-logo.svg`;
 
 // Every clickable thing in the dark bars gets the same 1px white outline on
 // hover that Amazon uses, so the header reads as one system.
@@ -94,8 +94,8 @@ function SearchBox({ compact = false }) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => hints.length && setOpen(true)}
-          placeholder="Search NimbusMart"
-          aria-label="Search NimbusMart"
+          placeholder="Search ANSHUVO"
+          aria-label="Search ANSHUVO"
           autoComplete="off"
           className="min-w-0 flex-1 px-3 text-[15px] text-ink placeholder:text-muted focus:outline-none"
         />
@@ -141,8 +141,8 @@ function DesktopHeader({ user, logout, count, openMenu }) {
     <>
       <div className="bg-navy px-3">
         <div className="flex h-[60px] items-center gap-1.5">
-          <Link to="/" className={`${navBtn} flex items-center py-2`} aria-label="NimbusMart home">
-            <img src={logo} alt="NimbusMart" className="h-7 w-auto" />
+          <Link to="/" className={`${navBtn} flex items-center py-2`} aria-label="ANSHUVO home">
+            <img src={logo} alt="ANSHUVO" className="h-7 w-auto" />
           </Link>
           <Link to="/account" className={`${navBtn} hidden items-end gap-0.5 md:flex`}>
             <MapPin size={18} className="mb-0.5" />
@@ -196,12 +196,12 @@ function PhoneHeader({ user, count, openMenu }) {
           <button type="button" onClick={openMenu} className={`${navBtn} -ml-1 px-1`} aria-label="Open all departments menu">
             <Menu size={26} />
           </button>
-          <Link to="/" className={`${navBtn} flex items-center px-1`} aria-label="NimbusMart home">
-            <img src={logo} alt="NimbusMart" className="h-6 w-auto" />
+          <Link to="/" className={`${navBtn} flex items-center px-1`} aria-label="ANSHUVO home">
+            <img src={logo} alt="ANSHUVO" className="h-5 w-auto sm:h-6" />
           </Link>
           <div className="ml-auto flex items-center">
-            <Link to={user ? "/account" : "/signin"} className={`${navBtn} flex items-center gap-1 text-sm`}>
-              {user ? `Hello, ${user.name.split(" ")[0]}` : "Sign in"} <ChevronRight size={14} /><User size={22} strokeWidth={1.8} />
+            <Link to={user ? "/account" : "/signin"} aria-label={user ? `Your account, ${user.name}` : "Sign in"} className={`${navBtn} flex items-center gap-1 text-sm`}>
+              <span className="hidden max-w-24 truncate min-[400px]:inline-block">{user ? `Hello, ${user.name.split(" ")[0]}` : "Sign in"}</span><User size={22} strokeWidth={1.8} />
             </Link>
             <CartLink count={count} label={false} />
           </div>

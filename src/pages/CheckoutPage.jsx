@@ -69,7 +69,7 @@ export default function CheckoutPage() {
     const err = validateCheckout(form);
     setErrors(err);
     if (Object.keys(err).length) {
-      const first = document.querySelector('[aria-invalid="true"]');
+      const first = document.getElementById(Object.keys(err)[0]);
       if (first) first.focus();
       return;
     }
@@ -119,7 +119,7 @@ export default function CheckoutPage() {
               <select
                 value={chosen}
                 onChange={(e) => { const a = addresses.find((x) => String(x.id) === e.target.value); if (a) applyAddress(a); else setChosen(""); }}
-                className="ml-2 rounded border border-line px-2 py-1"
+                className="mt-1 block w-full min-w-0 rounded border border-line px-2 py-2"
                 aria-label="Saved addresses"
               >
                 <option value="">Enter a new address</option>
